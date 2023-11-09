@@ -20,7 +20,20 @@ public class ArticleController {
 
     //Spring boot가 알아서 객체를 생성해 주기 때문에 미리 생성해 놓은 객체를 자동으로 연결해줌
     @Autowired
+//    private ArticleRepository articleRepository;
     private ArticleRepository articleRepository;
+
+    @GetMapping("/articles")
+    public String index(Model model){
+
+        // 1. load all article data
+        List<Article> articleEntityList = articleRepository.findAll();
+
+        // 2. submit as a view for the bunch of articles
+        model.addAttribute("articleList", articleEntityList);
+
+        return "articles/index"; //articles/index.mustache
+    }
 
     @GetMapping("/articles/new")
     public String newArticleForm(){
@@ -59,20 +72,10 @@ public class ArticleController {
         return "articles/show";
     }
 
-    @GetMapping("/articles")
-    public String index(Model model){
-
-        // 1. load all article data
-        List<Article> articleEntityList = articleRepository.findAll();
-
-        // 2. submit as a view for the bunch of articles
-        model.addAttribute("articleList", articleEntityList);
-
-        return "articles/index"; //articles/index.mustache
-    }
 
     @GetMapping("/articles/{id}/edit")
-    public String edit(@PathVariable Long id, Model model){
+    public String edit(@PathVariable Long id, Model model) {
+
         //load data to edit
         Article articleEntity = articleRepository.findById(id).orElse(null);
 

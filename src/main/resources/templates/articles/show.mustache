@@ -9,6 +9,7 @@
     </tr>
     </thead>
     <tbody>
+    {{#searchList}}
     {{#article}}
     <tr>
         <td>{{id}}</td>
@@ -16,8 +17,10 @@
         <td>{{content}}</td>
     </tr>
     {{/article}}
+    {{/searchList}}
     </tbody>
 </table>
+
 <a href="/articles/{{article.id}}/edit" class="btn btn-primary">수정</a>
 <a href="/articles/{{article.id}}/delete" class="btn btn-danger">삭제</a>
 <a href="/articles">목록으로</a>

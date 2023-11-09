@@ -4,7 +4,6 @@ import com.example.firstproject.dto.ArticleForm;
 import com.example.firstproject.entity.Article;
 import com.example.firstproject.repository.ArticleRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -13,18 +12,15 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service //서비스 선언! (서비스 객체를 스프링 부트에 선언)
+@Transactional
 public class ArticleService {
 
-    @Autowired //DI
     private ArticleRepository articleRepository;
+
 
     public List<Article> index() {
 
         return articleRepository.findAll();
-    }
-
-    public Article show(Long id) {
-        return articleRepository.findById(id).orElse(null);
     }
 
     public Article create(ArticleForm dto) {
@@ -34,6 +30,12 @@ public class ArticleService {
             return null;
         }
         return articleRepository.save(article);
+    }
+
+
+
+    public Article show(Long id) {
+        return articleRepository.findById(id).orElse(null);
     }
 
     public Article update(Long id, ArticleForm dto) {
@@ -77,12 +79,11 @@ public class ArticleService {
 
         //dto 묶음을 entity 묶음으로 변환
         List<Article> articleList = dtos.stream()
-                .map(dto->dto.toEntity())
+                .map(ArticleForm::toEntity)
                 .collect(Collectors.toList());
 
         //entity 묶음을 DB로 저장
-        articleList.stream()
-                .forEach(article -> articleRepository.save(article));
+        articleRepository.saveAll(articleList);
         //강제 예외 발생
         articleRepository.findById(-1L).orElseThrow(
                 ()->new IllegalArgumentException("검색 실패")
